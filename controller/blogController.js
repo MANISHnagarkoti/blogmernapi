@@ -357,7 +357,7 @@ exports.currentUserBlogs = async (req, res) => {
         const skip = (page * limit) - limit
 
 
-        console.log(limit , page , skip)
+        console.log(limit, page, skip)
 
 
         const findLoginuserblog = await userModel.findById(userid, "blogs").populate({

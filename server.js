@@ -29,16 +29,16 @@ db()
 // {{{{{{{{{{middel ware}}}}}}}}}}
 
 
+
+
+app.use(express.json())
+app.use(cookieParser());
+
 app.use(cors({
 
   origin: 'http://localhost:5173',
   credentials: true
 }));
-
-app.use(express.json())
-app.use(cookieParser());
-
-
 // app.use(morgan("dev"))
 
 // {{{{{{{{{{{users routes}}}}}}}}}}}
@@ -62,7 +62,7 @@ app.use("/comment", commentRoutes)
 app.get("/", (req, res) => {
 
 
-  res.send("Heloo there")
+  res.send("Heloo ther]]e")
 
 
 
