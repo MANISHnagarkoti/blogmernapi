@@ -162,7 +162,7 @@ exports.loginUsers = async (req, res) => {
         res.status(200).cookie("jwt", "kkkkk", {
 
             httpOnly: true,
-            domain: "localhost:5173"
+            secure:true
 
 
         }).send({
