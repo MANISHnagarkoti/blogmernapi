@@ -159,7 +159,7 @@ exports.loginUsers = async (req, res) => {
         })
 
 
-        res.status(200).cookie("jwt", newTokenGenerated, {
+        res.status(200).cookie("jwt", "kkkkk", {
 
             httpOnly: true,
 
