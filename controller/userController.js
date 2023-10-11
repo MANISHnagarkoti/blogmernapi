@@ -153,13 +153,18 @@ exports.loginUsers = async (req, res) => {
 
         const newTokenGenerated = jwt.sign({ user: userIs.id }, "holamurlikatale", {
 
-            expires: 3 * 24 * 60 * 60,
-            httpOnly:true,
+            expiresIn: 3 * 24 * 60 * 60,
+
 
         })
 
 
-        res.status(200).cookie("jwt", newTokenGenerated).send({
+        res.status(200).cookie("jwt", newTokenGenerated, {
+
+
+            httpOnly: true,
+
+        }).send({
             sucess: true,
             message: "Login succesfully",
             user: {
