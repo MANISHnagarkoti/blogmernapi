@@ -9,7 +9,7 @@ const loginAuth = (req, res) => {
     const token = req.cookies.jwt
 
 
-
+const checkkar = req.cookies.jwt
 
     if (token) {
 
@@ -86,7 +86,7 @@ const loginAuth = (req, res) => {
         return res.json({
 
             sucess: false,
-            message: "no token found"
+            message: checkkar
 
         })
 
