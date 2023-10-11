@@ -9,7 +9,8 @@ const cookieParser = require('cookie-parser');
 require("dotenv").config()
 
 
-
+app.use(express.json())
+app.use(cookieParser());
 
 // {{{{{{{{{{router}}}}}}}}}}
 const userRoutes = require("./routes/userRoutes")
@@ -31,7 +32,7 @@ db()
 
 
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://127.0.0.1:4200'],
+  origin: 'http://localhost:5173',
   credentials: true
 }));
 
@@ -50,8 +51,7 @@ app.use(function (req, res, next) {
 // }));
 
 
-app.use(express.json())
-app.use(cookieParser());
+
 
 
 

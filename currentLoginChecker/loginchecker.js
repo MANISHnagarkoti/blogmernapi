@@ -6,7 +6,7 @@ const userModel = require("../models/userSchema")
 const loginAuth = (req, res) => {
 
 
-  
+
 
     const token = req.cookies.jwt
 
