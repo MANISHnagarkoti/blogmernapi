@@ -86,7 +86,7 @@ const loginAuth = (req, res) => {
         return res.json({
 
             sucess: false,
-            message: "no token found"
+            message: "no token found fucker"
 
         })
 
