@@ -6,7 +6,7 @@ const userModel = require("../models/userSchema")
 const loginAuth = (req, res) => {
 
 
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjUyNWU1MDY3MTMxZmUyMDNlOTBjY2ZkIiwiaWF0IjoxNjk2OTgyMjg3LCJleHAiOjE2OTcyNDE0ODd9.k-QQpS6X0QozESpoRnsIywoCOtyev8WpUVObphWyr_o"
+    const token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNjUyNWU1MDY3MTMxZmUyMDNlOTBjY2ZkIiwiaWF0IjoxNjk2OTgyMjg3LCJleHAiOjE2OTcyNDE0ODd9.k - QQpS6X0QozESpoRnsIywoCOtyev8WpUVObphWyr_o
 
 
 
@@ -38,12 +38,12 @@ const loginAuth = (req, res) => {
                         {
                             sucess: false,
                             message: "no user found"
-                          
-    
+
+
                         }
-    
+
                     )
-    
+
 
                 }
 

@@ -2,7 +2,7 @@ const express = require("express")
 const loginchecker = require("../currentLoginChecker/loginchecker")
 
 
-const { registerUser, getAllUsers, loginUsers  , logoutUsers } = require("../controller/userController")
+const { registerUser, getAllUsers, loginUsers, logoutUsers } = require("../controller/userController")
 
 const router = express.Router()
 
