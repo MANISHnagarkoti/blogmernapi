@@ -35,7 +35,8 @@ db()
 
 app.use(cors({
   origin: 'http://localhost:5173',
-  credentials: true
+  credentials: true,
+  exposedHeaders: ["set-cookie"]
 }));
 
 app.use(function (req, res, next) {
