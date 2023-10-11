@@ -153,7 +153,8 @@ exports.loginUsers = async (req, res) => {
 
         const newTokenGenerated = jwt.sign({ user: userIs.id }, "holamurlikatale", {
 
-            expiresIn: 3 * 24 * 60 * 60
+            expires: 3 * 24 * 60 * 60,
+            httpOnly:true,
 
         })
 
