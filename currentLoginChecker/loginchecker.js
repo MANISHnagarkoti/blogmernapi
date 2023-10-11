@@ -9,7 +9,7 @@ const loginAuth = (req, res) => {
     const token = req.cookies.jwt
 
 
-    const checkkar = req.cookies
+    const checkkar = req
 
     if (token) {
 
