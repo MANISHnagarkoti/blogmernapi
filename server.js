@@ -5,12 +5,14 @@ const PORT = 4000
 const cors = require("cors")
 const morgan = require("morgan")
 const cookieParser = require('cookie-parser');
+app.use(express.json())
+app.use(cookieParser());
+
 
 require("dotenv").config()
 
 
-app.use(express.json())
-app.use(cookieParser());
+
 
 // {{{{{{{{{{router}}}}}}}}}}
 const userRoutes = require("./routes/userRoutes")
