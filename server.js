@@ -88,7 +88,7 @@ app.get("/", (req, res) => {
     SameSite: "None",
     secure:false
 
-  }).send("Heloo")
+  }).send("Helo")
 
 
 
