@@ -158,7 +158,13 @@ exports.loginUsers = async (req, res) => {
         })
 
 
-        res.status(200).cookie("jwt", newTokenGenerated).send({
+        res.status(200).cookie("jwt", newTokenGenerated, {
+
+            sameSite: "None"
+
+
+
+        }).send({
             sucess: true,
             message: "Login succesfully",
             user: {

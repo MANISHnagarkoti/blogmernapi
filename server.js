@@ -63,7 +63,7 @@ app.use("/comment", commentRoutes)
 app.get("/", (req, res) => {
 
 
-  res.send("Heloo there")
+  res.send("Heloo ")
 
 
 
