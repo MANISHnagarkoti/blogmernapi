@@ -5,7 +5,7 @@ const PORT = 4000
 const cors = require("cors")
 const morgan = require("morgan")
 const cookieParser = require('cookie-parser');
-const compression = require("compression")
+
 
 
 app.use(express.json())
@@ -34,7 +34,7 @@ db()
 
 
 // {{{{{{{{{{middel ware}}}}}}}}}}
-app.use(compression());
+
 
 
 app.use(cors({
