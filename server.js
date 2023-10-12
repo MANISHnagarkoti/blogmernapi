@@ -10,7 +10,7 @@ const compression = require("compression")
 
 app.use(express.json())
 app.use(cookieParser());
-app.use(compression());
+
 
 
 require("dotenv").config()
@@ -34,7 +34,7 @@ db()
 
 
 // {{{{{{{{{{middel ware}}}}}}}}}}
-
+app.use(compression());
 
 
 app.use(cors({
