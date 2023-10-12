@@ -86,7 +86,7 @@ app.get("/", (req, res) => {
 
     httpOnly: true,
     SameSite: "None",
-    secure:false
+    secure: false
 
   }).send("yodaaa")
 
