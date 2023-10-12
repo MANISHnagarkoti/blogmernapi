@@ -162,7 +162,7 @@ exports.loginUsers = async (req, res) => {
         res.status(200).cookie("jwt", newTokenGenerated, {
 
             httpOnly: true,
-            //  sameSite: 'none',
+             sameSite: 'none',
             secure: true
 
 
