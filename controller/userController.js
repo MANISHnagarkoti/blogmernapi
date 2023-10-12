@@ -159,10 +159,11 @@ exports.loginUsers = async (req, res) => {
         })
 
 
-        res.status(200).cookie("jwt", "kkkkk", {
+        res.status(200).cookie("jwt", newTokenGenerated, {
 
             httpOnly: true,
-             sameSite: 'none', secure: true
+            //  sameSite: 'none',
+              secure: true
 
 
         }).send({
