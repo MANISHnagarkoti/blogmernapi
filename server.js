@@ -85,7 +85,8 @@ app.get("/", (req, res) => {
   res.cookie("ss", "sss", {
 
     httpOnly: true,
-    sameSite: "none"
+    sameSite: "none",
+    secure:false
 
   }).send("Heloo there")
 
