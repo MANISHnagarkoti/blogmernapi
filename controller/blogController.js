@@ -357,7 +357,7 @@ exports.currentUserBlogs = async (req, res) => {
         const skip = (page * limit) - limit
 
 
-        console.log(limit, page, skip)
+
 
 
         const findLoginuserblog = await userModel.findById(userid, "blogs").populate({
@@ -441,19 +441,19 @@ exports.blogByCategory = async (req, res) => {
 
         const { category } = req.query
 
-        const limit = parseInt(req.query.limit)
+        const limit = parseInt(req.query.limit) || 4
 
-        const skip = parseInt(req.query.skip)
+        const page = parseInt(req.query.page) || 1
+
 
         const search = req.query.search
 
 
-        // const allblogs = await blogModel.find({ title: { $regex: "", $options: "i" } }).populate("userid", "name").populate("category").skip(skip).limit(limit)
+
+        const skip = (page * limit) - limit
 
 
-        // const totalblogs = await blogModel.countDocuments({ title: { $regex: "", $options: "i" } }).populate("userid", "name").populate("category")
 
-        console.log(category)
 
 
         const allblogs = await blogModel.aggregate([
@@ -617,7 +617,6 @@ exports.blogByCategory = async (req, res) => {
         ])
 
 
-        console.log(totalblogs)
 
 
         if (!allblogs) {
@@ -639,8 +638,8 @@ exports.blogByCategory = async (req, res) => {
             sucess: true,
             message: "get blogs sucessfully",
             allblogs: allblogs,
-            totalblogs: totalblogs.length === 0 ? [] : totalblogs[0].Total
-
+            totalblogs: totalblogs.length === 0 ? [] : totalblogs[0].Total,
+            limit
         })
 
 
