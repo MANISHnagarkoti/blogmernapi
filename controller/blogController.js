@@ -363,7 +363,7 @@ exports.currentUserBlogs = async (req, res) => {
         const findLoginuserblog = await userModel.findById(userid, "blogs").populate({
 
             path: "blogs", select: "-userid", options: {
-                skip: 0,
+                skip: skip,
                 limit: limit,
 
 
