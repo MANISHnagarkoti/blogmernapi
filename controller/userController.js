@@ -151,12 +151,7 @@ exports.loginUsers = async (req, res) => {
         }
 
 
-        const newTokenGenerated = jwt.sign({ user: userIs.id }, "holamurlikatale", {
-
-            expiresIn: 3 * 24 * 60 * 60,
-
-
-        })
+        const newTokenGenerated = jwt.sign({ user: userIs.id }, "holamurlikatale")
 
 
         res.status(200).cookie("jwt", newTokenGenerated, {
