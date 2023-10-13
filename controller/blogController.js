@@ -363,7 +363,7 @@ exports.currentUserBlogs = async (req, res) => {
         const findLoginuserblog = await userModel.findById(userid, "blogs").populate({
 
             path: "blogs", select: "-userid", options: {
-                skip: skip,
+                skip: 0,
                 limit: limit,
 
 
@@ -447,7 +447,6 @@ exports.blogByCategory = async (req, res) => {
 
 
         const search = req.query.search
-
 
 
         const skip = (page * limit) - limit
