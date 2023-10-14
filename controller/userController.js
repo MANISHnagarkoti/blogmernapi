@@ -158,7 +158,8 @@ exports.loginUsers = async (req, res) => {
 
             httpOnly: true,
             sameSite: 'None',
-            secure: true
+            secure: true,
+            maxAge: 24 * 60 * 60 * 1000
 
 
         }).send({
