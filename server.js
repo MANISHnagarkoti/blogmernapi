@@ -38,14 +38,14 @@ db()
 
 
 app.use(cors({
-  origin: 'https://tekkentagtgc.vercel.app',
+  origin: 'http://localhost:5173',
   credentials: true,
   exposedHeaders: ["set-cookie"]
 }));
 
 app.use(function (req, res, next) {
 
-  res.header('Access-Control-Allow-Origin', "https://tekkentagtgc.vercel.app");
+  res.header('Access-Control-Allow-Origin', "http://localhost:5173");
   res.header('Access-Control-Allow-Headers', true);
   res.header('Access-Control-Allow-Credentials', true);
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
