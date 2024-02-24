@@ -57,19 +57,13 @@ app.use(function (req, res, next) {
 //   origin: 'http://localhost:5173'
 // }));
 
-
-
-
-
-
-
 // app.use(morgan("dev"))
 
 // {{{{{{{{{{{users routes}}}}}}}}}}}
 app.use("/user", userRoutes)
 
 
-// {{{{{{{{{{{users routes}}}}}}}}}}}
+// {{{{{{{{{{{blogs routes}}}}}}}}}}}
 app.use("/blogs", blogsRoutes)
 
 
@@ -84,8 +78,6 @@ app.use("/comment", commentRoutes)
 // {{{{{{{{{{{{{}}}}}}}}}}}}}
 
 app.get("/", (req, res) => {
-
-
   res.cookie("ss", "sss", {
 
     httpOnly: true,
@@ -93,9 +85,6 @@ app.get("/", (req, res) => {
     secure: false
 
   }).send("yodaaa")
-
-
-
 })
 
 app.listen(PORT, () => {

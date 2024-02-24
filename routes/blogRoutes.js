@@ -1,15 +1,8 @@
 const express = require("express")
+const upload = require("../utils/multer")
 
 
-const { getAllBlog, createBlog, updateBlog, deleteBlog, singleBlog, currentUserBlogs, blogByCategory, likeBlog, unlikeBlog,
-
-
-    getEditedBlogInfo
-
-
-
-
-} = require("../controller/blogController")
+const { getAllBlog, createBlog, updateBlog, deleteBlog, singleBlog, currentUserBlogs, blogByCategory, likeBlog, unlikeBlog, getEditedBlogInfo, trendingBlog } = require("../controller/blogController")
 
 const router = express.Router()
 
@@ -18,9 +11,9 @@ const router = express.Router()
 
 router.get("/allBlog", getAllBlog)
 
-router.post("/createBlog", createBlog)
+router.post("/createBlog", upload.single('photo'), createBlog)
 
-router.put("/updateBlog", updateBlog)
+router.put("/updateBlog", upload.single('photo') , updateBlog)
 
 router.get("/getEditedBlogInfo/:id", getEditedBlogInfo)
 
@@ -46,5 +39,8 @@ router.put("/likeBlog", likeBlog)
 router.put("/unlikeBlog", unlikeBlog)
 
 
+// {{{{{{{{{trending blogs}}}}}}}}}
+
+router.get("/trendingBlog", trendingBlog)
 
 module.exports = router
