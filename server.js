@@ -38,7 +38,7 @@ db()
 
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://blogmernreact.vercel.app',
   credentials: true,
   exposedHeaders: ["set-cookie"]
 }));
