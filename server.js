@@ -84,7 +84,7 @@ app.get("/", (req, res) => {
     SameSite: "None",
     secure: false
 
-  }).send("yodaaa")
+  }).send("ys")
 })
 
 app.listen(PORT, () => {
