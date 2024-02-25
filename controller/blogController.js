@@ -73,7 +73,7 @@ exports.createBlog = async (req, res) => {
 
 exports.updateBlog = async (req, res) => {
   try {
-    const { title, description, id , category} = req.body;
+    const { title, description, id, category } = req.body;
 
     const editBlogByImg = await blogModel.findById(id)
 

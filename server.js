@@ -38,20 +38,20 @@ db()
 
 
 app.use(cors({
-  
-  origin: 'https://blogmeraapp.vercel.app',
+  // https://blogmeraapp.vercel.app
+  origin: ['https://blogmeraapp.vercel.app' , 'http://localhost:5173'],
   credentials: true,
   exposedHeaders: ["set-cookie"]
 }));
 
-app.use(function (req, res, next) {
+// app.use(function (req, res, next) {
 
-  res.header('Access-Control-Allow-Origin', "https://blogmeraapp.vercel.app");
-  res.header('Access-Control-Allow-Headers', true);
-  res.header('Access-Control-Allow-Credentials', true);
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  next();
-});
+//   res.header('Access-Control-Allow-Origin', "https://blogmeraapp.vercel.app");
+//   res.header('Access-Control-Allow-Headers', true);
+//   res.header('Access-Control-Allow-Credentials', true);
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   next();
+// });
 
 // app.use(cors({
 //   credentials: true,
