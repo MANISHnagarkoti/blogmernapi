@@ -1,6 +1,8 @@
 const bcrypt = require("bcryptjs");
 const userModel = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
+const uploadOnCloudinary = require("../utils/imgUpload")
+const updateImageToCloudinary = require("../utils/updateImg")
 
 exports.registerUser = async (req, res) => {
   try {
@@ -16,15 +18,49 @@ exports.registerUser = async (req, res) => {
     } else {
       const hashpassword = await bcrypt.hash(password, 8);
 
-      const user = new userModel({ name, email, password: hashpassword });
+
+
+      if (req.file !== undefined) {
+
+        const photo = await uploadOnCloudinary(req.file.path)
+
+        const user = new userModel({
+          name,
+          email,
+          password: hashpassword,
+          profileImg: photo.secure_url,
+          publicId: photo.public_id,
+        });
+
+
+
+        await user.save();
+
+
+        return res.status(201).send({
+          message: "user created",
+          sucess: true,
+          user,
+        });
+
+      }
+
+      const user = new userModel({
+        name,
+        email,
+        password: hashpassword,
+      });
 
       await user.save();
 
-      res.status(201).send({
+
+      return res.status(201).send({
         message: "user created",
         sucess: true,
         user,
       });
+
+
     }
   } catch (error) {
     console.log(error);
@@ -54,6 +90,7 @@ exports.getAllUsers = async (req, res) => {
     });
   }
 };
+
 
 exports.loginUsers = async (req, res) => {
   try {
@@ -96,6 +133,7 @@ exports.loginUsers = async (req, res) => {
           username: userIs.name,
           userid: userIs.id,
           useremail: userIs.email,
+          profilepic: userIs.profileImg
         },
       });
   } catch (error) {
@@ -106,6 +144,56 @@ exports.loginUsers = async (req, res) => {
     });
   }
 };
+
+
+exports.changeProfilePic = async (req, res) => {
+  try {
+
+    const { userid: id } = req.body;
+
+    console.log(id, req.file)
+
+    const userpublicId = await userModel.findById(id)
+
+    const photo = await updateImageToCloudinary(req.file.path, userpublicId.publicId)
+
+    const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
+      $set: {
+        profileImg: photo.secure_url,
+        publicId: photo.public_id,
+      }
+
+    }, { new: true }).select('profileImg')
+
+    return res.status(201).send({
+      sucess: true,
+      message: "update sucessfully",
+      updatedProfilePic,
+    });
+
+
+
+  } catch (error) {
+    // console.log(error)
+    res.status(500).send({
+      sucess: false,
+      message: "error in update profile pic",
+    });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 exports.logoutUsers = async (req, res) => {
   try {

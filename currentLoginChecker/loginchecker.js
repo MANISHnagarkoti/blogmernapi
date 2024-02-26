@@ -22,6 +22,7 @@ const loginAuth = (req, res) => {
             username: currentUserLogin.name,
             userid: currentUserLogin.id,
             useremail: currentUserLogin.email,
+            profilepic: currentUserLogin.profileImg
           },
         });
       }

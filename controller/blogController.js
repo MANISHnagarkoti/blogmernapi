@@ -77,15 +77,33 @@ exports.updateBlog = async (req, res) => {
 
     const editBlogByImg = await blogModel.findById(id)
 
-    const photo = await updateImageToCloudinary(req.file.path, editBlogByImg.publicId)
 
-    console.log(photo)
+
+    if (req.file) {
+
+      const photo = await updateImageToCloudinary(req.file.path, editBlogByImg.publicId)
+
+      const updatedblog = await blogModel.findByIdAndUpdate(
+        id,
+        {
+          title, description, category, imgUrl: photo.secure_url,
+          publicId: photo.public_id
+        },
+        { new: true }
+      );
+
+      return res.status(201).send({
+        sucess: true,
+        message: "update sucessfully",
+        updatedblog,
+      });
+
+    }
 
     const updatedblog = await blogModel.findByIdAndUpdate(
       id,
       {
-        title, description, category, imgUrl: photo.secure_url,
-        publicId: photo.public_id
+        title, description, category,
       },
       { new: true }
     );
