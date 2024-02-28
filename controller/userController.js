@@ -153,9 +153,30 @@ exports.changeProfilePic = async (req, res) => {
 
     console.log(id, req.file)
 
-    const userpublicId = await userModel.findById(id)
+    const user = await userModel.findById(id)
 
-    const photo = await updateImageToCloudinary(req.file.path, userpublicId.publicId)
+
+    if (user.publicId === "") {
+
+      const photo = await uploadOnCloudinary(req.file.path)
+
+      const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
+        $set: {
+          profileImg: photo.secure_url,
+          publicId: photo.public_id,
+        }
+
+      }, { new: true }).select('profileImg')
+
+      return res.status(201).send({
+        sucess: true,
+        message: "update sucessfully",
+        updatedProfilePic,
+      });
+
+    }
+
+    const photo = await updateImageToCloudinary(req.file.path, user.publicId)
 
     const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
       $set: {
@@ -165,7 +186,7 @@ exports.changeProfilePic = async (req, res) => {
 
     }, { new: true }).select('profileImg')
 
-    return res.status(201).send({
+    res.status(201).send({
       sucess: true,
       message: "update sucessfully",
       updatedProfilePic,
