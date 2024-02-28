@@ -186,10 +186,80 @@ exports.changeProfilePic = async (req, res) => {
 
 
 
+exports.updateUserName = async (req, res) => {
+  try {
+
+    const { userid: id, name } = req.body;
+
+    console.log(id, name)
+
+    const newName = await userModel.findByIdAndUpdate(id, {
+      $set: {
+        name: name,
+      }
+
+    }, { new: true }).select('name')
+
+    return res.status(201).send({
+      sucess: true,
+      message: "update sucessfully",
+      newName,
+    });
 
 
 
+  } catch (error) {
+    // console.log(error)
+    res.status(500).send({
+      sucess: false,
+      message: "error in update profile name",
+    });
+  }
+};
 
+
+exports.updateUserPassword = async (req, res) => {
+  try {
+
+    const { prevPassword, newPassword, userid: id } = req.body;
+
+    console.log(prevPassword, newPassword)
+
+    const userIs = await userModel.findById(id)
+
+    const passwordMatch = bcrypt.compare(prevPassword, userIs.password);
+
+    if (!passwordMatch) {
+      return res.status(200).send({
+        sucess: false,
+        message: "wrong credentials",
+      });
+    }
+
+    const hashpassword = await bcrypt.hash(newPassword, 8);
+
+    await userModel.findByIdAndUpdate(id, {
+      $set: {
+        password: hashpassword,
+      }
+
+    }, { new: true })
+
+    return res.status(201).send({
+      sucess: true,
+      message: "update sucessfully",
+    });
+
+
+
+  } catch (error) {
+    // console.log(error)
+    res.status(500).send({
+      sucess: false,
+      message: "error in while updating password",
+    });
+  }
+};
 
 
 
