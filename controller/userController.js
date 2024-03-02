@@ -158,7 +158,7 @@ exports.changeProfilePic = async (req, res) => {
 
     if (user.publicId === "") {
 
-      const photo = await uploadOnCloudinary(req.file.path)
+      const photo = await uploadOnCloudinary(req.file.path, "profile")
 
       const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
         $set: {
@@ -176,7 +176,7 @@ exports.changeProfilePic = async (req, res) => {
 
     }
 
-    const photo = await updateImageToCloudinary(req.file.path, user.publicId)
+    const photo = await updateImageToCloudinary(req.file.path, user.publicId, "profile")
 
     const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
       $set: {

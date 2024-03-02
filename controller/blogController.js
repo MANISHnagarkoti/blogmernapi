@@ -37,7 +37,7 @@ exports.createBlog = async (req, res) => {
   try {
     const { title, description, userid, category } = req.body;
 
-    const photo = await uploadOnCloudinary(req.file.path)
+    const photo = await uploadOnCloudinary(req.file.path, "blogpic")
 
     const newblog = new blogModel({
       title,
@@ -81,7 +81,7 @@ exports.updateBlog = async (req, res) => {
 
     if (req.file) {
 
-      const photo = await updateImageToCloudinary(req.file.path, editBlogByImg.publicId)
+      const photo = await updateImageToCloudinary(req.file.path, editBlogByImg.publicId, "profile")
 
       const updatedblog = await blogModel.findByIdAndUpdate(
         id,
@@ -235,6 +235,7 @@ exports.currentUserBlogs = async (req, res) => {
 
     let sort = { title: -1 }
 
+    const search = req.query.search;
 
     switch (sortby) {
       case "ascending":
@@ -256,12 +257,12 @@ exports.currentUserBlogs = async (req, res) => {
     }
 
 
-    console.log(sort)
 
     const findLoginuserblog = await userModel
       .findById(userid, "blogs")
       .populate({
         path: "blogs",
+        match: { title: new RegExp('^' + search, 'i') },
         select: "-userid",
         options: {
           skip: skip,
@@ -270,14 +271,15 @@ exports.currentUserBlogs = async (req, res) => {
         },
       });
 
+
     const totalblog = await userModel
       .findById(userid)
       .select("blogs")
       .populate({
         path: "blogs",
         select: "-userid",
+        match: { title: new RegExp('^' + search, 'i') },
       });
-
 
 
     if (!findLoginuserblog) {
@@ -378,14 +380,6 @@ exports.blogByCategory = async (req, res) => {
         },
       },
       {
-        $lookup: {
-          from: "users",
-          localField: "userid",
-          foreignField: "_id",
-          as: "userid",
-        },
-      },
-      {
         $match: {
           "category.category": {
             $regex: new RegExp(category === "All" ? "" : category, "i"),
@@ -398,16 +392,7 @@ exports.blogByCategory = async (req, res) => {
           title: { $regex: new RegExp(search || "", "i") },
         },
       },
-      {
-        $unwind: {
-          path: "$category",
-        },
-      },
-      {
-        $unwind: {
-          path: "$userid",
-        },
-      },
+
       { $count: "Total" },
     ]);
 
@@ -494,10 +479,12 @@ exports.unlikeBlog = async (req, res) => {
 // {{{{{{{{{{{{trending blogs}}}}}}}}}}}}
 
 
-exports.trendingBlog = async (req, res) => {
+exports.trendingBlogs = async (req, res) => {
   try {
 
-    const trending = await blogModel.find({}).sort({ likesNum: -1 })
+    const trending = await blogModel.find({}).sort({ likesNum: -1 }).limit(3)
+
+    console.log(trending)
 
     res.status(200).send({
       sucess: true,

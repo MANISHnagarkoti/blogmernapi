@@ -43,11 +43,16 @@ exports.getComment = async (req, res) => {
   try {
     const comments = await blogModel.findById(blogid, "comments").populate({
       path: "comments",
+      options: {
+        sort: { _id: -1 },
+      },
       populate: {
         path: "user",
-        select: "name",
+        select: "name profileImg",
+
       },
     });
+
 
     if (!comments) {
       return res.status(404).send({
