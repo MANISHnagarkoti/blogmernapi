@@ -123,7 +123,7 @@ exports.loginUsers = async (req, res) => {
         sameSite: "None",
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
-        
+
       })
       .send({
         sucess: true,
@@ -150,10 +150,7 @@ exports.changeProfilePic = async (req, res) => {
 
     const { userid: id } = req.body;
 
-    console.log(id, req.file)
-
     const user = await userModel.findById(id)
-
 
     if (user.publicId === "") {
 
@@ -211,8 +208,6 @@ exports.updateUserName = async (req, res) => {
 
     const { userid: id, name } = req.body;
 
-    console.log(id, name)
-
     const newName = await userModel.findByIdAndUpdate(id, {
       $set: {
         name: name,
@@ -247,7 +242,7 @@ exports.updateUserPassword = async (req, res) => {
 
     const userIs = await userModel.findById(id)
 
-    const passwordMatch = bcrypt.compare(prevPassword, userIs.password);
+    const passwordMatch = await bcrypt.compare(prevPassword, userIs.password);
 
     if (!passwordMatch) {
       return res.status(200).send({
