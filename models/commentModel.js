@@ -14,7 +14,6 @@ const commentSchema = new moongos.Schema({
         type: moongos.Types.ObjectId,
         ref: "User",
         require: [true, "user id required"]
-
     },
 
 

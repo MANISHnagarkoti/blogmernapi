@@ -1,7 +1,7 @@
 const express = require("express")
 
 
-const {postComment , getComment } = require("../controller/commentController")
+const { postComment, getComment, deleteComment } = require("../controller/commentController")
 
 const router = express.Router()
 
@@ -13,5 +13,7 @@ router.post("/postComment", postComment)
 // {{{{{{{{{{{{{{get comment}}}}}}}}}}}}}}
 
 router.get("/getComment/:blogid", getComment)
+
+router.delete("/deleteComment/:commentid/:blogid", deleteComment)
 
 module.exports = router

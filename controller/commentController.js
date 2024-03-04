@@ -76,3 +76,37 @@ exports.getComment = async (req, res) => {
     });
   }
 };
+
+exports.deleteComment = async (req, res) => {
+  const { commentid, blogid } = req.params;
+
+  try {
+
+    const deletedComment = await commentModel.findByIdAndDelete(commentid)
+
+    const blog = await blogModel.findById(blogid);
+
+    blog.comments.pull(deletedComment);
+
+    blog.save();
+
+    if (!blog) {
+      return res.status(404).send({
+        sucess: true,
+        message: "no blog found",
+      });
+    }
+
+    res.status(200).send({
+      sucess: true,
+      message: "deleted succefully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      sucess: false,
+      message: "error while deleting comment",
+      error,
+    });
+  }
+};

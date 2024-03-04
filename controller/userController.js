@@ -96,8 +96,6 @@ exports.loginUsers = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(email, password);
-
     const userIs = await userModel.findOne({ email });
 
     if (!userIs) {
@@ -125,6 +123,7 @@ exports.loginUsers = async (req, res) => {
         sameSite: "None",
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
+        
       })
       .send({
         sucess: true,

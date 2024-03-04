@@ -2,6 +2,7 @@ const blogModel = require("../models/blogModel");
 const userModel = require("../models/userSchema");
 const uploadOnCloudinary = require("../utils/imgUpload")
 const updateImageToCloudinary = require("../utils/updateImg")
+const deleteImg = require("../utils/deleteImg")
 // {{{{{{blog crud controllers}}}}}}
 
 exports.getAllBlog = async (req, res) => {
@@ -132,8 +133,6 @@ exports.getEditedBlogInfo = async (req, res) => {
       "title description imgUrl category"
     );
 
-    console.log(EditedBlogInfo);
-
     if (!EditedBlogInfo) {
       res.status(404).send({
         sucess: true,
@@ -163,11 +162,8 @@ exports.deleteBlog = async (req, res) => {
 
     const blog = await blogModel.findByIdAndDelete(id).populate("userid");
 
-    // const userexit = await userModel.findById(userid)
+    deleteImg(blog.publicId)
 
-    // userexit.blogs.push(newblog)
-
-    // await userexit.save()
     await blog.userid.blogs.pull(blog);
     await blog.userid.save();
 
