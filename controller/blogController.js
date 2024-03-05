@@ -189,7 +189,7 @@ exports.singleBlog = async (req, res) => {
 
     const findsingleblog = await blogModel
       .findById(id)
-      .populate("userid", "name")
+      .populate("userid", "name profileImg")
       .populate("category");
 
     if (!findsingleblog) {
