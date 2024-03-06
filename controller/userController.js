@@ -3,6 +3,10 @@ const userModel = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
 const uploadOnCloudinary = require("../utils/imgUpload")
 const updateImageToCloudinary = require("../utils/updateImg")
+const sendMail = require("../utils/sendMail")
+const crypto = require("crypto")
+const Token = require("../models/verifyLoginToken");
+const { findByIdAndUpdate } = require("../models/blogModel");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -37,6 +41,16 @@ exports.registerUser = async (req, res) => {
         await user.save();
 
 
+
+        const token = await new Token({
+          userId: user._id,
+          token: crypto.randomBytes(32).toString("hex"),
+        }).save();
+
+        const url = `${process.env.BASE_URL}user/verifyRegisterUser/${user.id}/verify/${token.token}`;
+
+        await sendMail(user.email, url)
+
         return res.status(201).send({
           message: "user created",
           sucess: true,
@@ -53,6 +67,7 @@ exports.registerUser = async (req, res) => {
 
       await user.save();
 
+      await sendMail()
 
       return res.status(201).send({
         message: "user created",
@@ -69,6 +84,33 @@ exports.registerUser = async (req, res) => {
       message: "error while fetching all users",
       error,
     });
+  }
+};
+
+
+exports.verifyRegisterUser = async (req, res) => {
+
+  try {
+    const user = await userModel.findOne({ _id: req.params.id });
+
+    if (!user) return res.status(400).send({ message: "Invalid link" });
+
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+
+    if (!token) return res.status(400).send({ message: "Invalid link" });
+
+    await userModel.findByIdAndUpdate(user._id, { $set: { verify: true } });
+
+    await Token.deleteMany({
+      userId: user._id,
+    });
+
+    res.status(200).send({ message: "Email verified successfully" });
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
   }
 };
 
@@ -104,6 +146,14 @@ exports.loginUsers = async (req, res) => {
         message: "No user found",
       });
     }
+
+    if (!userIs.verify) {
+      return res.status(200).send({
+        sucess: false,
+        message: "please verify account first then login",
+      });
+    }
+
 
     const passwordMatch = await bcrypt.compare(password, userIs.password);
 

@@ -29,7 +29,11 @@ const userSchema = new moongos.Schema({
             type: moongos.Types.ObjectId,
             ref: "Blog",
         }
-    ]
+    ],
+    verify: {
+        type: Boolean,
+        default: false
+    }
 
 }, { timestamps: true })
 
