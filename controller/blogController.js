@@ -480,8 +480,6 @@ exports.trendingBlogs = async (req, res) => {
 
     const trending = await blogModel.find({}).sort({ likesNum: -1 }).limit(3)
 
-    console.log(trending)
-
     res.status(200).send({
       sucess: true,
       trending

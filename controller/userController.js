@@ -288,8 +288,6 @@ exports.updateUserPassword = async (req, res) => {
 
     const { prevPassword, newPassword, userid: id } = req.body;
 
-    console.log(prevPassword, newPassword)
-
     const userIs = await userModel.findById(id)
 
     const passwordMatch = await bcrypt.compare(prevPassword, userIs.password);
@@ -337,6 +335,100 @@ exports.logoutUsers = async (req, res) => {
       sucess: true,
       message: "user Log out",
     });
+  } catch (error) {
+    // console.log(error)
+    res.status(500).send({
+      sucess: false,
+      message: "error in Logout",
+    });
+  }
+};
+
+exports.forgetPassword = async (req, res) => {
+
+  const { email } = req.body
+
+  try {
+
+
+    const userIs = await userModel.findOne({ email })
+
+    if (!userIs) {
+      return res.status(200).send({
+        sucess: false,
+        message: "No user found",
+      });
+    }
+
+    const tokenLink = jwt.sign({ userId: userIs._id }, `holamurlikatale${userIs.password}`, { expiresIn: "1d" });
+
+    const url = `${process.env.FRONT_URL}resetPassword/${userIs._id}/${tokenLink}`;
+
+    await sendMail(userIs.email, url)
+
+    res.status(200).send({
+      sucess: true,
+      message: "Check email for link",
+    });
+  } catch (error) {
+    // console.log(error)
+    res.status(500).send({
+      sucess: false,
+      message: "error",
+    });
+  }
+};
+
+
+exports.resetPassword = async (req, res) => {
+
+
+  const { token, userid } = req.params
+  const { newPassword } = req.body
+
+
+  try {
+
+    const passwordIs = await userModel.findById(userid)
+
+    jwt.verify(token, `holamurlikatale${passwordIs.password}`, async (error, decode) => {
+      if (error) {
+        return res.status(200).send({
+          sucess: false,
+          message: "not verify",
+        });
+      } else {
+
+        const hashpassword = await bcrypt.hash(newPassword, 8);
+
+        await userModel.findByIdAndUpdate(userid, {
+          $set: {
+
+            password: hashpassword
+
+          }
+        })
+
+        // if (userPasswordUpdate) {
+        //   return res.status(200).send({
+        //     sucess: true,
+        //     message: "user password update",
+        //   });
+        // }
+
+      }
+    });
+
+
+    return res.status(200).send({
+      sucess: true,
+      message: "password update",
+    });
+
+
+
+
+
   } catch (error) {
     // console.log(error)
     res.status(500).send({

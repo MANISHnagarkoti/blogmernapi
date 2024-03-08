@@ -3,11 +3,9 @@ const loginchecker = require("../currentLoginChecker/loginchecker")
 const upload = require("../utils/multer")
 
 
-const { registerUser, verifyRegisterUser, getAllUsers, loginUsers, logoutUsers, changeProfilePic, updateUserName, updateUserPassword } = require("../controller/userController")
+const { registerUser, verifyRegisterUser, resetPassword, forgetPassword, getAllUsers, loginUsers, logoutUsers, changeProfilePic, updateUserName, updateUserPassword } = require("../controller/userController")
 
 const router = express.Router()
-
-
 
 router.post("/register", upload.single('photo'), registerUser)
 
@@ -27,5 +25,9 @@ router.post("/updateUserName", updateUserName)
 router.post("/updateUserPassword", updateUserPassword)
 
 router.get("/verifyRegisterUser/:id/verify/:token", verifyRegisterUser)
+
+router.post("/forgetPassword", forgetPassword)
+
+router.post("/resetPassword/:userid/:token", resetPassword)
 
 module.exports = router
