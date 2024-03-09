@@ -42,7 +42,7 @@ exports.registerUser = async (req, res) => {
         await sendMail(user.email, url, "Email Verification Link")
 
         return res.status(201).send({
-          message: "user created",
+          message: "user created and please verify email",
           sucess: true,
           user,
         });
@@ -64,7 +64,7 @@ exports.registerUser = async (req, res) => {
       await sendMail(user.email, url, "Email Verification Link")
 
       return res.status(201).send({
-        message: "user created",
+        message: "user created and please verify email",
         sucess: true,
         user,
       });
