@@ -30,7 +30,7 @@ const updateImageToCloudinary = async (localFilePath, imageId, usedFor) => {
             public_id: imageId,
             invalidate: true,
             overwrite: true,
-            quality: 60, width: 300, height: 300, crop: "fit",
+            quality: 90, width: 500, height: 500, crop: "fit",
             fetch_format: "webp",       // Automatic format selection
             progressive: "true",        // Progressive rendering
             strip_metadata: true,       // Strip metadata
