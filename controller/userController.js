@@ -384,7 +384,6 @@ exports.resetPassword = async (req, res) => {
   const { token, userid } = req.params
   const { newPassword } = req.body
 
-
   try {
 
     const passwordIs = await userModel.findById(userid)
@@ -393,7 +392,7 @@ exports.resetPassword = async (req, res) => {
       if (error) {
         return res.status(200).send({
           sucess: false,
-          message: "not verify",
+          message: "not verify , Invalid link",
         });
       } else {
 
