@@ -37,7 +37,7 @@ exports.registerUser = async (req, res) => {
 
         const token = jwt.sign({ userId: user.id }, "holamurlikatale", { expiresIn: "1h" });
 
-        const url = `${process.env.FRONT_URL}/verifyRegisterUser/${user.id}/verify/${token.token}`;
+        const url = `${process.env.FRONT_URL}verifyRegisterUser/${user.id}/verify/${token}`;
 
         await sendMail(user.email, url, "Email Verification Link")
 
@@ -85,7 +85,15 @@ exports.registerUser = async (req, res) => {
 exports.verifyRegisterUser = async (req, res) => {
 
   try {
+
+
     const user = await userModel.findOne({ _id: req.params.id });
+
+    if (user.verify) {
+
+      return res.status(200).send({ sucess: true, message: "Already Verified" });
+
+    }
 
     if (!user) return res.status(200).send({ sucess: false, message: "Invalid link" });
 
