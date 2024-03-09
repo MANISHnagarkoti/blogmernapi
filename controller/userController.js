@@ -4,9 +4,6 @@ const jwt = require("jsonwebtoken");
 const uploadOnCloudinary = require("../utils/imgUpload")
 const updateImageToCloudinary = require("../utils/updateImg")
 const sendMail = require("../utils/sendMail")
-const crypto = require("crypto")
-const Token = require("../models/verifyLoginToken");
-const { findByIdAndUpdate } = require("../models/blogModel");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -36,19 +33,13 @@ exports.registerUser = async (req, res) => {
           publicId: photo.public_id,
         });
 
-
-
         await user.save();
 
-
-        const token = await new Token({
-          userId: user._id,
-          token: crypto.randomBytes(32).toString("hex"),
-        }).save();
+        const token = jwt.sign({ userId: user.id }, "holamurlikatale", { expiresIn: "1h" });
 
         const url = `${process.env.FRONT_URL}/verifyRegisterUser/${user.id}/verify/${token.token}`;
 
-        await sendMail(user.email, url)
+        await sendMail(user.email, url, "Email Verification Link")
 
         return res.status(201).send({
           message: "user created",
@@ -66,7 +57,11 @@ exports.registerUser = async (req, res) => {
 
       await user.save();
 
-      await sendMail()
+      const token = jwt.sign({ userId: user.id }, "holamurlikatale", { expiresIn: "1h" });
+
+      const url = `${process.env.FRONT_URL}/verifyRegisterUser/${user.id}/verify/${token.token}`;
+
+      await sendMail(user.email, url, "Email Verification Link")
 
       return res.status(201).send({
         message: "user created",
@@ -92,22 +87,18 @@ exports.verifyRegisterUser = async (req, res) => {
   try {
     const user = await userModel.findOne({ _id: req.params.id });
 
-    if (!user) return res.status(400).send({ sucess: false, message: "Invalid link" });
+    if (!user) return res.status(200).send({ sucess: false, message: "Invalid link" });
 
-    const token = await Token.findOne({
-      userId: user._id,
-      token: req.params.token,
-    });
+    const token = jwt.verify(req.params.token, "holamurlikatale")
 
-    if (!token) return res.status(400).send({ sucess: false, message: "Invalid link" });
+    if (!token) return res.status(200).send({ sucess: false, message: "Invalid link" });
+
+    if (token.userId === user._id) return res.status(200).send({ sucess: false, message: "Invalid link" });
 
     await userModel.findByIdAndUpdate(user._id, { $set: { verify: true } });
 
-    await Token.deleteMany({
-      userId: user._id,
-    });
+    return res.status(200).send({ sucess: true, message: "Email verified successfully", email: user.email });
 
-    res.status(200).send({ sucess: true, message: "Email verified successfully" });
   } catch (error) {
     res.status(500).send({ sucess: false, message: "Internal Server Error" });
   }
@@ -363,7 +354,7 @@ exports.forgetPassword = async (req, res) => {
 
     const url = `${process.env.FRONT_URL}resetPassword/${userIs._id}/${tokenLink}`;
 
-    await sendMail(userIs.email, url)
+    await sendMail(userIs.email, url, "Reset Password Link")
 
     res.status(200).send({
       sucess: true,
