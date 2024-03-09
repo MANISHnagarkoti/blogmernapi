@@ -46,7 +46,7 @@ exports.registerUser = async (req, res) => {
           token: crypto.randomBytes(32).toString("hex"),
         }).save();
 
-        const url = `${process.env.FRONT_URL}user/verifyRegisterUser/${user.id}/verify/${token.token}`;
+        const url = `${process.env.FRONT_URL}/verifyRegisterUser/${user.id}/verify/${token.token}`;
 
         await sendMail(user.email, url)
 
