@@ -82,7 +82,7 @@ exports.updateBlog = async (req, res) => {
 
     if (req.file) {
 
-      const photo = await updateImageToCloudinary(req.file.path, editBlogByImg.publicId, "profile")
+      const photo = await updateImageToCloudinary(req.file.path, editBlogByImg.publicId, "blogpic")
 
       const updatedblog = await blogModel.findByIdAndUpdate(
         id,

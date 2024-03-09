@@ -23,7 +23,7 @@ exports.registerUser = async (req, res) => {
 
       if (req.file !== undefined) {
 
-        const photo = await uploadOnCloudinary(req.file.path)
+        const photo = await uploadOnCloudinary(req.file.path , "profile" )
 
         const user = new userModel({
           name,
