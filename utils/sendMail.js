@@ -18,7 +18,7 @@ module.exports = async (userEmail, url, subject,) => {
             to: userEmail, // list of receivers
             subject: subject, // Subject line
             text: "Verification Link", // plain text body
-            html: `<h1>${url}</h1> <b>Link expire in 1 Hour</b>  `, // html body
+            html: `<h3>${url}</h3> <b>Link expire in 1 Hour</b>  `, // html body
         });
 
     } catch (e) {
