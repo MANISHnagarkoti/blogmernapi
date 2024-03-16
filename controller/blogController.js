@@ -362,7 +362,7 @@ exports.blogByCategory = async (req, res) => {
           },
         },
       ])
-      .sort({ id: -1 })
+      .sort({ id: 1 })
       .skip(skip)
       .limit(limit);
 
