@@ -23,7 +23,7 @@ exports.registerUser = async (req, res) => {
 
       if (req.file !== undefined) {
 
-        const photo = await uploadOnCloudinary(req.file.path , "profile" )
+        const photo = await uploadOnCloudinary(req.file.path, "profile")
 
         const user = new userModel({
           name,
@@ -59,7 +59,7 @@ exports.registerUser = async (req, res) => {
 
       const token = jwt.sign({ userId: user.id }, "holamurlikatale", { expiresIn: "1h" });
 
-      const url = `${process.env.FRONT_URL}/verifyRegisterUser/${user.id}/verify/${token.token}`;
+      const url = `${process.env.FRONT_URL}verifyRegisterUser/${user.id}/verify/${token}`;
 
       await sendMail(user.email, url, "Email Verification Link")
 
