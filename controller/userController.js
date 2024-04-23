@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
 const userModel = require("../models/userSchema");
 const jwt = require("jsonwebtoken");
-const uploadOnCloudinary = require("../utils/imgUpload")
-const updateImageToCloudinary = require("../utils/updateImg")
-const sendMail = require("../utils/sendMail")
+const uploadOnCloudinary = require("../utils/imgUpload");
+const updateImageToCloudinary = require("../utils/updateImg");
+const sendMail = require("../utils/sendMail");
 
 exports.registerUser = async (req, res) => {
   try {
@@ -19,11 +19,8 @@ exports.registerUser = async (req, res) => {
     } else {
       const hashpassword = await bcrypt.hash(password, 8);
 
-
-
       if (req.file !== undefined) {
-
-        const photo = await uploadOnCloudinary(req.file.path, "profile")
+        const photo = await uploadOnCloudinary(req.file.path, "profile");
 
         const user = new userModel({
           name,
@@ -35,18 +32,19 @@ exports.registerUser = async (req, res) => {
 
         await user.save();
 
-        const token = jwt.sign({ userId: user.id }, "holamurlikatale", { expiresIn: "1h" });
+        const token = jwt.sign({ userId: user.id }, "holamurlikatale", {
+          expiresIn: "1h",
+        });
 
         const url = `${process.env.FRONT_URL}verifyRegisterUser/${user.id}/verify/${token}`;
 
-        await sendMail(user.email, url, "Email Verification Link")
+        await sendMail(user.email, url, "Email Verification Link");
 
         return res.status(201).send({
           message: "user created and please verify email",
           sucess: true,
           user,
         });
-
       }
 
       const user = new userModel({
@@ -57,19 +55,19 @@ exports.registerUser = async (req, res) => {
 
       await user.save();
 
-      const token = jwt.sign({ userId: user.id }, "holamurlikatale", { expiresIn: "1h" });
+      const token = jwt.sign({ userId: user.id }, "holamurlikatale", {
+        expiresIn: "1h",
+      });
 
       const url = `${process.env.FRONT_URL}verifyRegisterUser/${user.id}/verify/${token}`;
 
-      await sendMail(user.email, url, "Email Verification Link")
+      await sendMail(user.email, url, "Email Verification Link");
 
       return res.status(201).send({
         message: "user created and please verify email",
         sucess: true,
         user,
       });
-
-
     }
   } catch (error) {
     console.log(error);
@@ -81,32 +79,36 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-
 exports.verifyRegisterUser = async (req, res) => {
-
   try {
-
-
     const user = await userModel.findOne({ _id: req.params.id });
 
     if (user.verify) {
-
-      return res.status(200).send({ sucess: true, message: "Already Verified" });
-
+      return res
+        .status(200)
+        .send({ sucess: true, message: "Already Verified" });
     }
 
-    if (!user) return res.status(200).send({ sucess: false, message: "Invalid link" });
+    if (!user)
+      return res.status(200).send({ sucess: false, message: "Invalid link" });
 
-    const token = jwt.verify(req.params.token, "holamurlikatale")
+    const token = jwt.verify(req.params.token, "holamurlikatale");
 
-    if (!token) return res.status(200).send({ sucess: false, message: "Invalid link" });
+    if (!token)
+      return res.status(200).send({ sucess: false, message: "Invalid link" });
 
-    if (token.userId === user._id) return res.status(200).send({ sucess: false, message: "Invalid link" });
+    if (token.userId === user._id)
+      return res.status(200).send({ sucess: false, message: "Invalid link" });
 
     await userModel.findByIdAndUpdate(user._id, { $set: { verify: true } });
 
-    return res.status(200).send({ sucess: true, message: "Email verified successfully", email: user.email });
-
+    return res
+      .status(200)
+      .send({
+        sucess: true,
+        message: "Email verified successfully",
+        email: user.email,
+      });
   } catch (error) {
     res.status(500).send({ sucess: false, message: "Internal Server Error" });
   }
@@ -131,7 +133,6 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-
 exports.loginUsers = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -152,7 +153,6 @@ exports.loginUsers = async (req, res) => {
       });
     }
 
-
     const passwordMatch = await bcrypt.compare(password, userIs.password);
 
     if (!passwordMatch) {
@@ -171,7 +171,6 @@ exports.loginUsers = async (req, res) => {
         sameSite: "None",
         secure: true,
         maxAge: 24 * 60 * 60 * 1000,
-
       })
       .send({
         sucess: true,
@@ -180,7 +179,7 @@ exports.loginUsers = async (req, res) => {
           username: userIs.name,
           userid: userIs.id,
           useremail: userIs.email,
-          profilepic: userIs.profileImg
+          profilepic: userIs.profileImg,
         },
       });
   } catch (error) {
@@ -192,52 +191,59 @@ exports.loginUsers = async (req, res) => {
   }
 };
 
-
 exports.changeProfilePic = async (req, res) => {
   try {
-
     const { userid: id } = req.body;
 
-    const user = await userModel.findById(id)
+    const user = await userModel.findById(id);
 
     if (user.publicId === "") {
+      const photo = await uploadOnCloudinary(req.file.path, "profile");
 
-      const photo = await uploadOnCloudinary(req.file.path, "profile")
-
-      const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
-        $set: {
-          profileImg: photo.secure_url,
-          publicId: photo.public_id,
-        }
-
-      }, { new: true }).select('profileImg')
+      const updatedProfilePic = await userModel
+        .findByIdAndUpdate(
+          id,
+          {
+            $set: {
+              profileImg: photo.secure_url,
+              publicId: photo.public_id,
+            },
+          },
+          { new: true }
+        )
+        .select("profileImg");
 
       return res.status(201).send({
         sucess: true,
         message: "update sucessfully",
         updatedProfilePic,
       });
-
     }
 
-    const photo = await updateImageToCloudinary(req.file.path, user.publicId, "profile")
+    const photo = await updateImageToCloudinary(
+      req.file.path,
+      user.publicId,
+      "profile"
+    );
 
-    const updatedProfilePic = await userModel.findByIdAndUpdate(id, {
-      $set: {
-        profileImg: photo.secure_url,
-        publicId: photo.public_id,
-      }
-
-    }, { new: true }).select('profileImg')
+    const updatedProfilePic = await userModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            profileImg: photo.secure_url,
+            publicId: photo.public_id,
+          },
+        },
+        { new: true }
+      )
+      .select("profileImg");
 
     res.status(201).send({
       sucess: true,
       message: "update sucessfully",
       updatedProfilePic,
     });
-
-
-
   } catch (error) {
     // console.log(error)
     res.status(500).send({
@@ -247,30 +253,27 @@ exports.changeProfilePic = async (req, res) => {
   }
 };
 
-
-
-
-
 exports.updateUserName = async (req, res) => {
   try {
-
     const { userid: id, name } = req.body;
 
-    const newName = await userModel.findByIdAndUpdate(id, {
-      $set: {
-        name: name,
-      }
-
-    }, { new: true }).select('name')
+    const newName = await userModel
+      .findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            name: name,
+          },
+        },
+        { new: true }
+      )
+      .select("name");
 
     return res.status(201).send({
       sucess: true,
       message: "update sucessfully",
       newName,
     });
-
-
-
   } catch (error) {
     // console.log(error)
     res.status(500).send({
@@ -280,13 +283,11 @@ exports.updateUserName = async (req, res) => {
   }
 };
 
-
 exports.updateUserPassword = async (req, res) => {
   try {
-
     const { prevPassword, newPassword, userid: id } = req.body;
 
-    const userIs = await userModel.findById(id)
+    const userIs = await userModel.findById(id);
 
     const passwordMatch = await bcrypt.compare(prevPassword, userIs.password);
 
@@ -299,20 +300,20 @@ exports.updateUserPassword = async (req, res) => {
 
     const hashpassword = await bcrypt.hash(newPassword, 8);
 
-    await userModel.findByIdAndUpdate(id, {
-      $set: {
-        password: hashpassword,
-      }
-
-    }, { new: true })
+    await userModel.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          password: hashpassword,
+        },
+      },
+      { new: true }
+    );
 
     return res.status(201).send({
       sucess: true,
       message: "update sucessfully",
     });
-
-
-
   } catch (error) {
     // console.log(error)
     res.status(500).send({
@@ -321,10 +322,6 @@ exports.updateUserPassword = async (req, res) => {
     });
   }
 };
-
-
-
-
 
 exports.logoutUsers = async (req, res) => {
   try {
@@ -343,13 +340,10 @@ exports.logoutUsers = async (req, res) => {
 };
 
 exports.forgetPassword = async (req, res) => {
-
-  const { email } = req.body
+  const { email } = req.body;
 
   try {
-
-
-    const userIs = await userModel.findOne({ email })
+    const userIs = await userModel.findOne({ email });
 
     if (!userIs) {
       return res.status(200).send({
@@ -358,11 +352,15 @@ exports.forgetPassword = async (req, res) => {
       });
     }
 
-    const tokenLink = jwt.sign({ userId: userIs._id }, `holamurlikatale${userIs.password}`, { expiresIn: "1d" });
+    const tokenLink = jwt.sign(
+      { userId: userIs._id },
+      `holamurlikatale${userIs.password}`,
+      { expiresIn: "1d" }
+    );
 
     const url = `${process.env.FRONT_URL}resetPassword/${userIs._id}/${tokenLink}`;
 
-    await sendMail(userIs.email, url, "Reset Password Link")
+    await sendMail(userIs.email, url, "Reset Password Link");
 
     res.status(200).send({
       sucess: true,
@@ -377,55 +375,83 @@ exports.forgetPassword = async (req, res) => {
   }
 };
 
-
 exports.resetPassword = async (req, res) => {
-
-
-  const { token, userid } = req.params
-  const { newPassword } = req.body
+  const { token, userid } = req.params;
+  const { newPassword } = req.body;
 
   try {
+    const passwordIs = await userModel.findById(userid);
 
-    const passwordIs = await userModel.findById(userid)
+    jwt.verify(
+      token,
+      `holamurlikatale${passwordIs.password}`,
+      async (error, decode) => {
+        if (error) {
+          return res.status(200).send({
+            sucess: false,
+            message: "not verify , Invalid link",
+          });
+        } else {
+          const hashpassword = await bcrypt.hash(newPassword, 8);
 
-    jwt.verify(token, `holamurlikatale${passwordIs.password}`, async (error, decode) => {
-      if (error) {
-        return res.status(200).send({
-          sucess: false,
-          message: "not verify , Invalid link",
-        });
-      } else {
+          await userModel.findByIdAndUpdate(userid, {
+            $set: {
+              password: hashpassword,
+            },
+          });
 
-        const hashpassword = await bcrypt.hash(newPassword, 8);
-
-        await userModel.findByIdAndUpdate(userid, {
-          $set: {
-
-            password: hashpassword
-
-          }
-        })
-
-        // if (userPasswordUpdate) {
-        //   return res.status(200).send({
-        //     sucess: true,
-        //     message: "user password update",
-        //   });
-        // }
-
+          // if (userPasswordUpdate) {
+          //   return res.status(200).send({
+          //     sucess: true,
+          //     message: "user password update",
+          //   });
+          // }
+        }
       }
-    });
-
+    );
 
     return res.status(200).send({
       sucess: true,
       message: "password update",
     });
+  } catch (error) {
+    // console.log(error)
+    res.status(500).send({
+      sucess: false,
+      message: "error in Logout",
+    });
+  }
+};
+
+exports.getVerifyLink = async (req, res) => {
+  const { email } = req.body;
 
 
+  console.log(email)
+  try {
+    const user = await userModel.findOne({ email });
 
+  console.log(user)
 
+    if (!user) {
+      return res.status(200).send({
+        message: "gmail not found",
+        sucess: false,
+      });
+    }
 
+    const token = jwt.sign({ userId: user.id }, "holamurlikatale", {
+      expiresIn: "1h",
+    });
+
+    const url = `${process.env.FRONT_URL}verifyRegisterUser/${user.id}/verify/${token}`;
+
+    await sendMail(user.email, url, "Email Verification Link");
+
+    return res.status(201).send({
+      message: `we send link in ${emai}`,
+      sucess: true,
+    });
   } catch (error) {
     // console.log(error)
     res.status(500).send({
